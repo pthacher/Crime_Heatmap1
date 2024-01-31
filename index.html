@@ -1,0 +1,102 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+
+   
+<title>Intro to heatmap | Sample | ArcGIS Maps SDK for JavaScript 4.28</title>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css" />
+    
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+    
+    
+    <script src="https://js.arcgis.com/4.28/"></script>
+
+    <script>
+      require(["esri/Map", "esri/layers/CSVLayer", "esri/views/MapView", "esri/widgets/Legend"], (
+        Map,
+        CSVLayer,
+        MapView,
+        Legend
+      ) => {
+        const url = "https://raw.githubusercontent.com/orhuna/WebGIS_SLU_M1/main/Module%202/stl_crime_wgs_84.csv";
+
+        // Paste the url into a browser's address bar to download and view the attributes
+        // in the CSV file.
+
+        const template = {
+          title: "Crime committed at {ILEADSStreet}"
+        };
+
+        // The heatmap renderer assigns each pixel in the view with
+        // an intensity value. The ratio of that intensity value
+        // to the maxPixel intensity is used to assign a color
+        // from the continuous color ramp in the colorStops property
+
+        const renderer = {
+          type: "heatmap",
+          colorStops: [
+            { color: "rgba(63, 40, 102, 0)", ratio: 0 },
+            { color: "#472b77", ratio: 0.083 },
+            { color: "#4e2d87", ratio: 0.166 },
+            { color: "#563098", ratio: 0.249 },
+            { color: "#36B3FF", ratio: 0.332 },
+            { color: "#36FFF3", ratio: 0.415 },
+            { color: "#36FF94", ratio: 0.498 },
+            { color: "#48FF36", ratio: 0.581 },
+            { color: "#FF7B7B", ratio: 0.664 },
+            { color: "#FA8072", ratio: 0.747 },
+            { color: "#FF3333", ratio: 0.83 },
+            { color: "#FFA436", ratio: 0.913 },
+            { color: "#FFD736", ratio: 1 }
+          ],
+          maxDensity: 0.1,
+          minDensity: 0
+        };
+
+       const layer = new CSVLayer({
+        url: url,
+        title: "St. Louis Crime Heatmap",
+        copyright: "St. Louis Police Department",
+		latitudeField:"Lat",
+        longitudeField:"Lon",
+		popupTemplate: template,
+		renderer: renderer
+});
+
+        const map = new Map({
+          basemap: "gray-vector",
+          layers: [layer]
+        });
+
+        const view = new MapView({
+          container: "viewDiv",
+          center: [-90.3, 38.6],
+          zoom: 10,
+          map: map
+        });
+
+        view.ui.add(
+          new Legend({
+            view: view
+          }),
+          "bottom-left"
+        );
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="viewDiv"></div>
+  </body>
+</html>
